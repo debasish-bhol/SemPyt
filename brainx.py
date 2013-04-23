@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -12,9 +12,11 @@ class BrainFuck:
         self.data = data
         
         # inicializace proměnných
-        self.memory = memory
+        self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
-        
+        self.stack = list()
+
+                
         # DEBUG a testy
         # a) paměť výstupu
         self.output = output
@@ -49,5 +51,4 @@ class BrainCopter():
         self.data = ''
         # ..který pak předhodíme interpretru
         self.program = BrainFuck(self.data)
-
 
