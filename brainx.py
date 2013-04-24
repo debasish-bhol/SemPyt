@@ -14,12 +14,44 @@ class BrainFuck:
         # inicializace proměnných
         self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
-        self.stack = list()
+        data_pointer = 0
+        stack = list()
+        
+        while 1:        #hlavní loop
+            print(self.memory_pointer)
+            if(self.data[data_pointer]=='+'):
+                self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]+1)%256
 
-                
+            if(self.data[data_pointer]=='-'):
+                self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]-1)%256
+
+            if(self.data[data_pointer]=='>'):
+                self.memory_pointer+=1
+                print(self.memory_pointer>=len(self.memory))
+                if(self.memory_pointer>=len(self.memory)):
+                    self.memory.append(0)
+
+            if(self.data[data_pointer]=='<'):
+                self.memory_pointer-=1
+
+            if(self.data[data_pointer]=='['):
+                stack.append(data_pointer)
+
+            if(self.data[data_pointer]==']'):
+                if(len(stack)>0):
+                    if(self.memory[self.memory_pointer]!=0):
+                        data_pointer=stack[len(stack)-1]
+                    else:
+                         stack.pop()
+
+            data_pointer+=1
+
+            if(len(self.data)<=data_pointer):
+                break
+                        
         # DEBUG a testy
         # a) paměť výstupu
-        self.output = output
+        self.output = ""
     
     #
     # pro potřeby testů
