@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
 
 class BrainFuck:
     """Interpretr jazyka brainfuck."""
@@ -14,48 +15,61 @@ class BrainFuck:
         # inicializace proměnných
         self.memory = bytearray(memory)
         self.memory_pointer = memory_pointer
+        self.output =""
         data_pointer = 0
         stack = list()
         
         while 1:        #hlavní loop
-            print(self.memory_pointer)
             if(self.data[data_pointer]=='+'):
                 self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]+1)%256
 
-            if(self.data[data_pointer]=='-'):
+            elif(self.data[data_pointer]=='-'):
                 self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]-1)%256
 
-            if(self.data[data_pointer]=='>'):
+            elif(self.data[data_pointer]=='>'):
                 self.memory_pointer+=1
-                print(self.memory_pointer>=len(self.memory))
                 if(self.memory_pointer>=len(self.memory)):
                     self.memory.append(0)
 
-            if(self.data[data_pointer]=='<'):
+            elif(self.data[data_pointer]=='<'):
                 self.memory_pointer-=1
 
-            if(self.data[data_pointer]=='['):
-                stack.append(data_pointer)
+            elif(self.data[data_pointer]==']'):
+                if(self.memory[self.memory_pointer]!=0):
+                    data_pointer=stack[len(stack)-1]
+                else:
+                    stack.pop()
 
-            if(self.data[data_pointer]==']'):
-                if(len(stack)>0):
-                    if(self.memory[self.memory_pointer]!=0):
-                        data_pointer=stack[len(stack)-1]
-                    else:
-                         stack.pop()
+            elif(self.data[data_pointer]=='.'):
+                self.output+=chr(self.memory[self.memory_pointer])
+                sys.stdout.write(chr(self.memory[self.memory_pointer]))
+                sys.stdout.flush()
+
+            elif(self.data[data_pointer]==','):
+                self.memory[self.memory_pointer] = ord(sys.stdin.read(1))
+
+            elif(self.data[data_pointer]=='['):
+                if(self.memory[self.memory_pointer]!=0):
+                    stack.append(data_pointer)
+                else:
+                    count=1
+
+                    while(count>0):
+                        data_pointer+=1
+                        if(self.data[data_pointer]=='['):
+                            count+=1
+                        elif(self.data[data_pointer]==']'):
+                            count-=1
+                        if(len(self.data)<=data_pointer):
+                            break
 
             data_pointer+=1
 
             if(len(self.data)<=data_pointer):
                 break
                         
-        # DEBUG a testy
-        # a) paměť výstupu
-        self.output = ""
-    
-    #
-    # pro potřeby testů
-    #
+        
+
     def get_memory(self):
         # Nezapomeňte upravit získání návratové hodnoty podle vaší implementace!
         return self.memory
