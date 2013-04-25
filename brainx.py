@@ -17,8 +17,17 @@ class BrainFuck:
         self.memory_pointer = memory_pointer
         self.output =""
         data_pointer = 0
+        input_data_pointer = len(data)
         stack = list()
         
+
+        #hledání vstupních dat
+        while (input_data_pointer>0):
+            input_data_pointer-=1
+            if(data[input_data_pointer]=='!'):
+                input_data_pointer+=1
+                break
+
         while 1:        #hlavní loop
             if(self.data[data_pointer]=='+'):
                 self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]+1)%256
@@ -32,7 +41,7 @@ class BrainFuck:
                     self.memory.append(0)
 
             elif(self.data[data_pointer]=='<'):
-                self.memory_pointer-=1
+                 self.memory_pointer-=1
 
             elif(self.data[data_pointer]==']'):
                 if(self.memory[self.memory_pointer]!=0):
@@ -46,7 +55,11 @@ class BrainFuck:
                 sys.stdout.flush()
 
             elif(self.data[data_pointer]==','):
-                self.memory[self.memory_pointer] = ord(sys.stdin.read(1))
+                if((input_data_pointer>0)and(input_data_pointer<len(data))):
+                    self.memory[self.memory_pointer] = ord(data[input_data_pointer])
+                    input_data_pointer+=1
+                else:
+                    self.memory[self.memory_pointer] = ord(sys.stdin.read(1))
 
             elif(self.data[data_pointer]=='['):
                 if(self.memory[self.memory_pointer]!=0):
@@ -71,7 +84,6 @@ class BrainFuck:
         
 
     def get_memory(self):
-        # Nezapomeňte upravit získání návratové hodnoty podle vaší implementace!
         return self.memory
 
 
