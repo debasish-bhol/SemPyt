@@ -95,7 +95,7 @@ class BrainLoller():
     def nextPixel(self):
         self.pointer += self.direction
         if(len(self.rgb) > self.line):
-            if len(self.rgb[self.line]) > self.pointer :
+            if((len(self.rgb[self.line]) > self.pointer) and (self.pointer > -1)):
                 return self.rgb[self.line][self.pointer]
             else:
                 return False
@@ -119,45 +119,41 @@ class BrainLoller():
         self.direction = 1
 
         # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
-        self.data = ''
+        self.data = []
 
         value = self.nextPixel()
 
-        print(self.rgb)
-
         #smyčka rozkodovávající data
         while(value):
-            print(value)
             if value == (255,0,0):
-                self.data += ">"
+                self.data.append(">")
             elif value == (128,0,0):
-                self.data += "<"
+                self.data.append("<")
             elif value == (0,255,0):
-                self.data += "+"
+                self.data.append("+")
             elif value == (0,128,0):
-                self.data += "-"
+                self.data.append("-")
             elif value == (0,0,255):
-                self.data += "."
+                self.data.append(".")
             elif value == (0,0,128):
-                self.data += ","
+                self.data.append(",")
             elif value == (255,255,0):
-                self.data += "["
+                self.data.append("[")
             elif value == (128,128,0):
-                self.data += "]"
+                self.data.append("]")
             elif value == (0,255,255):
-                self.line += 1
-                self.direction = -1
-                self.pointer = self.width -1
+                if(self.direction == 1):
+                    self.line += 1
+                self.direction -= 1
             elif value == (0,128,128):
-                self.line += 1
-                self.direction = 1
-                self.pointer = 0
+                if(self.direction == -1):
+                    self.line += 1
+                self.direction += 1
             value = self.nextPixel()
 
-        print(self.data)
+        self.data = "".join(self.data)
         # ..který pak předhodíme interpretru
         self.program = BrainFuck(self.data)
-
 
 class BrainCopter():
     """Třída pro zpracování jazyka braincopter."""
