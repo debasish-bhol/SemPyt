@@ -94,7 +94,7 @@ class BrainLoller():
         
         # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
         self.data = ''
-
+        
 
 
 
