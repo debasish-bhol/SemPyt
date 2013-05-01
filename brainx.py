@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import image_png
+import os.path
 
 class BrainFuck:
     """Interpretr jazyka brainfuck."""
@@ -88,16 +90,71 @@ class BrainFuck:
 
 class BrainLoller():
     """Třída pro zpracování jazyka brainloller."""
-    
+
+    #nextPixel vždy vrátí další pixel k rozkódování
+    def nextPixel(self):
+        self.pointer += self.direction
+        if(len(self.rgb) > self.line):
+            if len(self.rgb[self.line]) > self.pointer :
+                return self.rgb[self.line][self.pointer]
+            else:
+                return False
+        else:
+            return False
+
     def __init__(self, filename):
         """Inicializace interpretru brainlolleru."""
-        
+
+        if not os.path.isfile(filename):
+            print("File or path does not exist!")
+            return
+
+        image = image_png.PngReader(filename)
+
+        self.rgb = image.rgb
+        self.width = image.width
+        self.heigth = image.heigth
+        self.pointer = -1
+        self.line = 0
+        self.direction = 1
+
         # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
         self.data = ''
-        
 
+        value = self.nextPixel()
 
+        print(self.rgb)
 
+        #smyčka rozkodovávající data
+        while(value):
+            print(value)
+            if value == (255,0,0):
+                self.data += ">"
+            elif value == (128,0,0):
+                self.data += "<"
+            elif value == (0,255,0):
+                self.data += "+"
+            elif value == (0,128,0):
+                self.data += "-"
+            elif value == (0,0,255):
+                self.data += "."
+            elif value == (0,0,128):
+                self.data += ","
+            elif value == (255,255,0):
+                self.data += "["
+            elif value == (128,128,0):
+                self.data += "]"
+            elif value == (0,255,255):
+                self.line += 1
+                self.direction = -1
+                self.pointer = self.width -1
+            elif value == (0,128,128):
+                self.line += 1
+                self.direction = 1
+                self.pointer = 0
+            value = self.nextPixel()
+
+        print(self.data)
         # ..který pak předhodíme interpretru
         self.program = BrainFuck(self.data)
 

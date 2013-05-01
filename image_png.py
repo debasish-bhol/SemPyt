@@ -39,8 +39,8 @@ class PngReader():
         # RGB-data obrázku jako seznam seznamů řádek,
         #   v každé řádce co pixel, to trojce (R, G, B)
         self.rgb = []
-        width = 0
-        heigth = 0
+        self.width = 0
+        self.heigth = 0
 
         idats = bytearray()
 
@@ -59,8 +59,8 @@ class PngReader():
                     raise PNGWrongData("Data CRC does not match!")
 
                 if(typ == b"IHDR"):
-                    width = self.byteArrayToInt(data[:4])
-                    heigth = self.byteArrayToInt(data[4:8])
+                    self.width = self.byteArrayToInt(data[:4])
+                    self.heigth = self.byteArrayToInt(data[4:8])
 
                     if(data[8:] != b"\x08\x02\x00\x00\x00"):
                        raise PNGNotImplementedError("Not supported png type!")
@@ -76,11 +76,11 @@ class PngReader():
         idats = zlib.decompress(idats)
        
          #následné zpracování rozbalených dat
-        for i in range(heigth):
+        for i in range(self.heigth):
             line = []
-            line_counter = i * width * 3 + i
+            line_counter = i * self.width * 3 + i
             filtr = idats[line_counter]
-            for j in range(width):
+            for j in range(self.width):
                 column_counter = line_counter + j * 3
                 R = idats[column_counter + 1]
                 G = idats[column_counter + 2]
