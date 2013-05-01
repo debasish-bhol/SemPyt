@@ -157,11 +157,68 @@ class BrainLoller():
 
 class BrainCopter():
     """Třída pro zpracování jazyka braincopter."""
-    
+
+    #nextComannd vždy vrátí další příkaz
+    def nextComannd(self):
+        self.pointer += self.direction
+        #print(self.line,self.pointer,"compare to ",len(self.rgb[self.line]))
+        if(len(self.rgb) > self.line):
+            if((len(self.rgb[self.line]) > self.pointer) and (self.pointer > -1)):
+                pixel = self.rgb[self.line][self.pointer]
+                return ((-2 * pixel[0] + 3 * pixel[1] + pixel[2]) % 11) + 1
+            else:
+                return False
+        else:
+            return False
+
     def __init__(self, filename):
         """Inicializace interpretru braincopteru."""
         
+        if not os.path.isfile(filename):
+            print("File or path does not exist!")
+            return
+
+        image = image_png.PngReader(filename)
+
+        self.rgb = image.rgb
+        self.pointer = -1
+        self.line = 0
+        self.direction = 1
+
         # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
-        self.data = ''
+        self.data = []
+
+        value = self.nextComannd()
+
+        #smyčka rozkodovávající data
+        while(value):
+            if value == 1:
+                self.data.append(">")
+            elif value == 2:
+                self.data.append("<")
+            elif value == 3:
+                self.data.append("+")
+            elif value == 4:
+                self.data.append("-")
+            elif value == 5:
+                self.data.append(".")
+            elif value == 6:
+                self.data.append(",")
+            elif value == 7:
+                self.data.append("[")
+            elif value == 8:
+                self.data.append("]")
+            elif value == 9:
+                if(self.direction == 1):
+                    self.line += 1
+                self.direction -= 1
+            elif value == 10:
+                if(self.direction == -1):
+                    self.line += 1
+                self.direction += 1
+            value = self.nextComannd()
+
+        self.data = "".join(self.data)
+
         # ..který pak předhodíme interpretru
         self.program = BrainFuck(self.data)
