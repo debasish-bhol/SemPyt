@@ -8,7 +8,7 @@ import os.path
 class BrainFuck:
     """Interpretr jazyka brainfuck."""
     
-    def __init__(self, data, memory=b'\x00', memory_pointer=0):
+    def __init__(self, data, memory = b'\x00', memory_pointer = 0):
         """Inicializace interpretru brainfucku."""
         
         # data programu
@@ -32,10 +32,10 @@ class BrainFuck:
         #hlavní loop
         while 1:        
             if(self.data[data_pointer] == '+'):
-                self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]+1)%256
+                self.memory[self.memory_pointer] = (self.memory[self.memory_pointer] + 1) % 256
 
             elif(self.data[data_pointer] == '-'):
-                self.memory[self.memory_pointer]=(self.memory[self.memory_pointer]-1)%256
+                self.memory[self.memory_pointer] = (self.memory[self.memory_pointer] - 1) % 256
 
             elif(self.data[data_pointer] == '>'):
                 self.memory_pointer += 1
@@ -44,11 +44,11 @@ class BrainFuck:
 
             elif(self.data[data_pointer] == '<'):
                 if(self.memory_pointer > 0):
-                    self.memory_pointer -=1
+                    self.memory_pointer -= 1
 
             elif(self.data[data_pointer] == ']'):
                 if(self.memory[self.memory_pointer] != 0):
-                    data_pointer = stack[len(stack)-1]
+                    data_pointer = stack[len(stack) - 1]
                 else:
                     stack.pop()
 
@@ -68,7 +68,7 @@ class BrainFuck:
                 if(self.memory[self.memory_pointer] != 0):
                     stack.append(data_pointer)
                 else:
-                    count=1
+                    count = 1
 
                     while(count > 0):
                         data_pointer += 1
@@ -112,8 +112,6 @@ class BrainLoller():
         image = image_png.PngReader(filename)
 
         self.rgb = image.rgb
-        self.width = image.width
-        self.heigth = image.heigth
         self.pointer = -1
         self.line = 0
         self.direction = 1
@@ -152,6 +150,7 @@ class BrainLoller():
             value = self.nextPixel()
 
         self.data = "".join(self.data)
+
         # ..který pak předhodíme interpretru
         self.program = BrainFuck(self.data)
 
@@ -161,7 +160,6 @@ class BrainCopter():
     #nextComannd vždy vrátí další příkaz
     def nextComannd(self):
         self.pointer += self.direction
-        #print(self.line,self.pointer,"compare to ",len(self.rgb[self.line]))
         if(len(self.rgb) > self.line):
             if((len(self.rgb[self.line]) > self.pointer) and (self.pointer > -1)):
                 pixel = self.rgb[self.line][self.pointer]
