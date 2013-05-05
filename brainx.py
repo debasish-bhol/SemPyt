@@ -93,14 +93,32 @@ class BrainLoller():
 
     #nextPixel vždy vrátí další pixel k rozkódování
     def nextPixel(self):
-        self.pointer += self.direction
-        if(len(self.rgb) > self.line):
+        self.pointer += self.direction_p
+        self.line += self.direction_l
+        if(len(self.rgb) > self.line) and (self.line > -1):
             if((len(self.rgb[self.line]) > self.pointer) and (self.pointer > -1)):
                 return self.rgb[self.line][self.pointer]
             else:
                 return False
         else:
             return False
+
+    def rotation(self, i, j):
+        if(i == 0):
+            if(j == 1):
+                i = 1
+                j = 0
+            elif(j == -1):
+                i = -1
+                j = 0
+        elif(j == 0):
+            if(i == 1):
+                i = 0
+                j = -1
+            elif(i == -1):
+                i = 0
+                j = 1
+        return (i,j)
 
     def __init__(self, filename):
         """Inicializace interpretru brainlolleru."""
@@ -114,7 +132,8 @@ class BrainLoller():
         self.rgb = image.rgb
         self.pointer = -1
         self.line = 0
-        self.direction = 1
+        self.direction_p = 1
+        self.direction_l = 0
 
         # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
         self.data = []
@@ -140,13 +159,13 @@ class BrainLoller():
             elif value == (128,128,0):
                 self.data.append("]")
             elif value == (0,255,255):
-                if(self.direction == 1):
-                    self.line += 1
-                self.direction -= 1
+                new_direction = self.rotation(self.direction_l,self.direction_p)
+                self.direction_p = new_direction[1]
+                self.direction_l = new_direction[0]
             elif value == (0,128,128):
-                if(self.direction == -1):
-                    self.line += 1
-                self.direction += 1
+                new_direction = self.rotation(self.direction_p,self.direction_l)
+                self.direction_p = new_direction[0]
+                self.direction_l = new_direction[1]
             value = self.nextPixel()
 
         self.data = "".join(self.data)
@@ -159,8 +178,9 @@ class BrainCopter():
 
     #nextComannd vždy vrátí další příkaz
     def nextComannd(self):
-        self.pointer += self.direction
-        if(len(self.rgb) > self.line):
+        self.pointer += self.direction_p
+        self.line += self.direction_l
+        if(len(self.rgb) > self.line) and (self.line > -1):
             if((len(self.rgb[self.line]) > self.pointer) and (self.pointer > -1)):
                 pixel = self.rgb[self.line][self.pointer]
                 return ((-2 * pixel[0] + 3 * pixel[1] + pixel[2]) % 11) + 1
@@ -168,6 +188,23 @@ class BrainCopter():
                 return False
         else:
             return False
+
+    def rotation(self, i, j):
+        if(i == 0):
+            if(j == 1):
+                i = 1
+                j = 0
+            elif(j == -1):
+                i = -1
+                j = 0
+        elif(j == 0):
+            if(i == 1):
+                i = 0
+                j = -1
+            elif(i == -1):
+                i = 0
+                j = 1
+        return (i,j)
 
     def __init__(self, filename):
         """Inicializace interpretru braincopteru."""
@@ -181,7 +218,8 @@ class BrainCopter():
         self.rgb = image.rgb
         self.pointer = -1
         self.line = 0
-        self.direction = 1
+        self.direction_p = 1
+        self.direction_l = 0
 
         # self.data obsahuje rozkódovaný zdrojový kód brainfucku..
         self.data = []
@@ -207,13 +245,13 @@ class BrainCopter():
             elif value == 8:
                 self.data.append("]")
             elif value == 9:
-                if(self.direction == 1):
-                    self.line += 1
-                self.direction -= 1
+                new_direction = self.rotation(self.direction_l,self.direction_p)
+                self.direction_p = new_direction[1]
+                self.direction_l = new_direction[0]
             elif value == 10:
-                if(self.direction == -1):
-                    self.line += 1
-                self.direction += 1
+                new_direction = self.rotation(self.direction_p,self.direction_l)
+                self.direction_p = new_direction[0]
+                self.direction_l = new_direction[1]
             value = self.nextComannd()
 
         self.data = "".join(self.data)
