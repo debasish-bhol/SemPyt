@@ -6,7 +6,7 @@ import image_png
 import os.path
 
 class BrainFuck:
-    """Interpretr jazyka brainfuck."""
+    """Interpretr jazyka brainfuck..."""
     
     def __init__(self, data, memory = b'\x00', memory_pointer = 0):
         """Inicializace interpretru brainfucku."""
